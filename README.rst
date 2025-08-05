@@ -2,7 +2,7 @@
 Wagtail SVG
 ***********
 
-**MODIFIED VERSION FOR WAGTAIL 6 COMPATIBILITY**
+**Wagtail 6 Compatible Version**
 
 This is a modified version of the original wagtailsvg package, adapted for Wagtail 6 compatibility.
 The original work is by Alexis Le Baron. This modified version maintains the same GPL-3.0 license.
@@ -50,12 +50,25 @@ Can be used like this :
         ]
 
 
+Installation
+###########
+
+Install from Git repository:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/YOUR_USERNAME/wagtailsvg.git
+
+Or add to your requirements.txt:
+
+.. code-block:: text
+
+    git+https://github.com/YOUR_USERNAME/wagtailsvg.git
+
+Replace `YOUR_USERNAME` with your actual GitHub username and repository name.
+
 Setup
 #####
-
-Install with pip :
-
-``pip install wagtailsvg``
 
 Add these to django apps installed :
 
@@ -82,40 +95,37 @@ Requirements
 - Django >= 4.2
 - django-taggit
 
-Development env
-###############
+Testing
+#######
 
-**If first run**
+Run the compatibility tests:
 
-::
+.. code-block:: bash
 
-    git clone git@github.com:Aleksi44/wagtailsvg.git
-    pip install -r requirements.txt
-    python manage.py migrate
-    python manage.py init
+    python run_tests.py
 
+Or run specific tests:
 
-**Run Django Server**
+.. code-block:: bash
 
-::
+    python tests/test_wagtail6_compatibility.py
 
-    python manage.py runserver 0.0.0.0:4243
-
-
-**Run Webpack Server**
-
-::
-
-    yarn
-    yarn start
-
-
-Snoweb SVG
+Development
 ##########
 
-To integrate SVG icons on Wagtail, I created Snoweb SVG with +2000 optimized SVG.
-Check the `SVG library <https://github.com/Aleksi44/snoweb-svg>`_.
+Clone the repository:
 
-Feel free to contact me at `hello@snoweb.io`.
+.. code-block:: bash
 
-Made with ❤ by `Snoweb <https://www.snoweb.io/fr/>`_.
+    git clone https://github.com/YOUR_USERNAME/wagtailsvg.git
+    cd wagtailsvg
+    pip install -r requirements.txt
+    python run_tests.py
+
+License
+#######
+
+This project is licensed under the GNU General Public License v3.0.
+
+Original work by Alexis Le Baron.
+Modified for Wagtail 6 compatibility - 2025.
