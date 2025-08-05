@@ -1,0 +1,67 @@
+{% extends 'wagtailadmin/base.html' %}
+{% load wagtailadmin_tags %}
+
+{% block content %}
+  <div class="nice-padding">
+    <h1>{% trans 'Choose an SVG' %}</h1>
+
+    <form action="{% url 'svg_chooser:choose_results' %}" method="GET" class="search-form">
+      <div class="search-form__input-wrapper">
+        <input type="text" name="q" placeholder="{% trans 'Search SVGs...' %}" value="{{ search_query|default:'' }}" class="search-form__input" />
+        <button type="submit" class="search-form__button">{% trans 'Search' %}</button>
+      </div>
+    </form>
+
+    <div class="results">
+      {% if svg_list %}
+        <div class="listing">
+          {% for svg in svg_list %}
+            <div class="listing__item">
+              <div class="listing__item-content">
+                <div class="listing__item-title">
+                  <a href="#" class="chooser-item" data-id="{{ svg.id }}" data-title="{{ svg.title }}" data-url="{{ svg.url }}">{{ svg.title }}</a>
+                </div>
+                {% if svg.url %}
+                  <div class="listing__item-meta">
+                    <img src="{{ svg.url }}" alt="{{ svg.title }}" style="max-width: 100px; max-height: 100px;" />
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+          {% include 'wagtailadmin/shared/pagination_nav.html' with items=page_obj %}
+        {% endif %}
+      {% else %}
+        <p>
+          {% trans 'No SVGs found.' %}
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.chooser-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.preventDefault()
+          var data = {
+            id: this.dataset.id,
+            string: this.dataset.title,
+            url: this.dataset.url,
+            edit_link: '{% url "svg_chooser:edit" 0 %}'.replace('0', this.dataset.id)
+          }
+          window.parent.postMessage(
+            {
+              type: 'svg_chooser:choose',
+              result: data
+            },
+            '*'
+          )
+        })
+      })
+    })
+  </script>
+{% endblock %}
