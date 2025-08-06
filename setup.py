@@ -9,7 +9,7 @@ with open("README.rst", "r") as fh:
 
 setup(
     name="wagtailsvg",
-    version="0.0.39.post1",
+    version="0.0.40",
     url="https://github.com/Aleksi44/wagtailsvg",
     author="Alexis Le Baron (Original), Modified for Wagtail 6 compatibility",
     author_email="alexis@stationspatiale.com",
