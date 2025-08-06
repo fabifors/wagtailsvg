@@ -7,52 +7,211 @@
   <div class="nice-padding" style="margin-top: 20px;">
     <div class="help-block help-info">
       <div class="help-block__text">
-        <h3>Preview</h3>
-        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
-          <div id="svg-preview-container">
-            <p style="color: #666; text-align: center;">Select an SVG file to see preview</p>
+        <div class="help-block__header">
+          <h3>Preview</h3>
+          <div class="svg-preview-actions">
+            <button type="button" class="button button-small button-secondary" onclick="refreshPreview()">Refresh Preview</button>
+            <button type="button" class="button button-small button-secondary" id="background-toggle"></button>
           </div>
         </div>
-        <div style="text-align: center;">
-          <button type="button" class="button button-small button-secondary" onclick="refreshPreview()" style="display: none;" id="refresh-btn">Refresh Preview</button>
+        <div class="svg-preview-container" id="svg-preview-container" data-preview-background="light">
+          <div id="svg-preview-wrapper" class="svg-preview-wrapper">
+            <p style="color: #666; text-align: center;">Select an SVG file to see preview</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <style>
+    /* Help block theme-aware styling */
+    .help-block {
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-border-primary);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 20px 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .help-block__text h3 {
+      color: var(--w-color-text-label);
+      font-size: 1.5em;
+      font-weight: 500;
+      margin: 0;
+    }
+    
+    .help-block__text {
+      color: var(--color-text-primary);
+    }
+    
+    .help-block__icon {
+      color: var(--color-text-primary);
+    }
+    
+    .help-block__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* SVG preview container styling */
+    .svg-preview-container {
+      text-align: center;
+      padding: 20px;
+      background: var(--color-surface-primary);
+      border: 1px solid var(--color-border-primary);
+      border-radius: 8px;
+      margin: 10px 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      position: relative;
+    }
+    
+    /* Dark background variant */
+    .svg-preview-container[data-preview-background='dark'] {
+      background: #1a1a1a;
+      border-color: #404040;
+    }
+    
+    /* Light background variant */
+    .svg-preview-container[data-preview-background='light'] {
+      background: #f7f7f7;
+      border-color: #e1e5e9;
+    }
+    
+    .svg-preview-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+    
+    .svg-preview-image {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      object-fit: contain;
+    }
+    
+    .svg-preview-actions {
+      text-align: center;
+    }
+    
+    .svg-preview-actions .button {
+      margin: 0 5px;
+      transition: all 0.2s ease;
+    }
+    
+    /* Dark mode specific adjustments */
+    @media (prefers-color-scheme: dark) {
+      .help-block {
+        background: var(--color-surface-secondary, #2a2a2a);
+        border-color: var(--color-border-secondary, #404040);
+      }
+    
+      .svg-preview-container {
+        background: var(--color-surface-secondary, #2a2a2a);
+        border-color: var(--color-border-secondary, #404040);
+      }
+    }
+    
+    /* Light mode specific adjustments */
+    @media (prefers-color-scheme: light) {
+      .help-block {
+        background: var(--color-surface-primary, #f8f9fa);
+        border-color: var(--color-border-primary, #e1e5e9);
+      }
+    
+      .svg-preview-container {
+        background: var(--color-surface-primary, #f8f9fa);
+        border-color: var(--color-border-primary, #e1e5e9);
+      }
+    }
+  </style>
+
   <script>
+    // DOM state management for preview background
+    const PreviewState = {
+      current: 'light',
+      // Initialize state from DOM
+      init() {
+        const container = document.getElementById('svg-preview-container')
+        if (container) {
+          this.current = container.dataset.previewBackground || 'light'
+          this.updateUI()
+        }
+      },
+    
+      // Toggle between light and dark
+      toggle() {
+        this.current = this.current === 'light' ? 'dark' : 'light'
+        this.updateDOM()
+        this.updateUI()
+      },
+    
+      // Update DOM with current state
+      updateDOM() {
+        const container = document.getElementById('svg-preview-container')
+        if (container) {
+          container.dataset.previewBackground = this.current
+        }
+      },
+    
+      // Update UI elements based on current state
+      updateUI() {
+        const toggleButton = document.getElementById('background-toggle')
+        if (toggleButton) {
+          toggleButton.textContent = this.current === 'light' ? 'Switch to Dark Background' : 'Switch to Light Background'
+        }
+      }
+    }
+
+    const message_text = `<p style="text-align: center; color: #666;">Select an SVG file to see preview</p>`;
+    
+    // Refresh preview
     function refreshPreview() {
-      const container = document.getElementById('svg-preview-container')
+      const wrapper = document.getElementById('svg-preview-wrapper')
       const fileInput = document.querySelector('input[type="file"]')
-      const refreshBtn = document.getElementById('refresh-btn')
       
       if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0]
         const reader = new FileReader()
         
         reader.onload = function(e) {
-          container.innerHTML = `
-            <object data="${e.target.result}" type="image/svg+xml" style="max-width: 100%; max-height: 300px;" id="svg-preview">
-              <img src="${e.target.result}" alt="SVG Preview" style="max-width: 100%; max-height: 300px;" />
-            </object>
-          `
-          refreshBtn.style.display = 'inline-block'
+          wrapper.innerHTML = `<img src="${e.target.result}" alt="SVG Preview" class="svg-preview-image" id="svg-preview" />`
         }
         
         reader.readAsDataURL(file)
       } else {
-        container.innerHTML = '<p style="color: #666; text-align: center;">Select an SVG file to see preview</p>'
-        refreshBtn.style.display = 'none'
+        wrapper.innerHTML = message_text;
       }
     }
-
-    // Auto-refresh preview when file input changes
-    document.addEventListener('DOMContentLoaded', function() {
+    
+    // Toggle preview background using state management
+    function togglePreviewBackground() {
+      PreviewState.toggle()
+    }
+    
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize preview state
+      PreviewState.init()
+    
+      // Set up file input change listener
       const fileInput = document.querySelector('input[type="file"]')
       if (fileInput) {
-        fileInput.addEventListener('change', refreshPreview)
+        fileInput.addEventListener('change', function () {
+          refreshPreview()
+        })
       }
-      refreshPreview()
+    
+      // Set up background toggle button
+      const toggleButton = document.getElementById('background-toggle')
+      if (toggleButton) {
+        toggleButton.addEventListener('click', togglePreviewBackground)
+      }
     })
   </script>
 {% endblock %}
+

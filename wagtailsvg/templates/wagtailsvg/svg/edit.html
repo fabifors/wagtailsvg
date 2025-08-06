@@ -205,6 +205,9 @@
       // Initialize preview state
       PreviewState.init()
     
+      // Refresh preview
+      refreshPreview()
+    
       // Set up file input change listener
       const fileInput = document.querySelector('input[type="file"]')
       if (fileInput) {
