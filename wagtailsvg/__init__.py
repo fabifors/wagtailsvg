@@ -14,8 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Modified version for Wagtail 6 compatibility - 2024
+Modified version for Wagtail 6 compatibility - 2025
 Original work by Alexis Le Baron
 """
 
-__version__ = "0.0.39-wagtail6"
+__version__ = "0.0.39.post1"
