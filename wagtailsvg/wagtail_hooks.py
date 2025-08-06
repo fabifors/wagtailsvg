@@ -22,7 +22,7 @@ def add_svg_summary_item(request, items):
 def register_svg_chooser_viewset():
     from wagtailsvg.views import SvgChooserViewSet
 
-    return SvgChooserViewSet("svg_chooser", url_prefix="svg-chooser")
+    return SvgChooserViewSet("wagtailsvg", url_prefix="svg")
 
 
 # Register SVG as a snippet

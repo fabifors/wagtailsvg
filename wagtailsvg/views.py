@@ -18,6 +18,3 @@ class SvgChooserViewSet(ModelViewSet):
     create_view_class = CreateView
     delete_view_class = DeleteView
     permission_policy = None
-
-
-[]
