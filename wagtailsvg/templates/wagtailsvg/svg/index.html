@@ -1,57 +1,129 @@
-{% extends 'wagtailadmin/generic/index.html' %}
-{% load i18n wagtailadmin_tags %}
+{% extends 'wagtailadmin/base.html' %}
+{% load wagtailadmin_tags i18n %}
 
-{% block result_list %}
-  {% if not all_count %}
-    <div class="nice-padding" style="margin-top:30px;">
-      {% if no_valid_parents %}
-        <p>
-          {% blocktrans with view.verbose_name_plural as name %}No {{ name }} have been created yet. One of the following must be created before you can add any
-          {{ name }}:{% endblocktrans %}
-        </p>
-        <ul>
-          {% for type in required_parent_types %}
-            <li>
-              <b>{{ type|title }}</b>
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>
-          {% blocktrans with view.verbose_name_plural as name %}No {{ name }} have been created yet.{% endblocktrans %}
-          {% if user_can_create %}
-            {% blocktrans with view.create_url as url %}Why not <a href="{{ url }}">add one</a>?{% endblocktrans %}
-          {% endif %}
-        </p>
+{% block titletag %}
+  {{ header_title }}
+{% endblock %}
+
+{% block content %}
+  {% block header %}
+    {% block slim_header %}
+      {% if breadcrumbs_items %}
+        {# Ensure all necessary variables are passed explicitly here #}
+        {% include 'wagtailadmin/shared/headers/slim_header.html' with breadcrumbs_items=breadcrumbs_items side_panels=side_panels history_url=history_url title=header_title search_url=index_results_url search_form=search_form filters=filters buttons=header_buttons icon_name=header_icon only %}
       {% endif %}
-    </div>
-  {% else %}
-    <div class="nice-padding">
-      <div id="image-results">
-        {% comment %}TODO: Add H2 and search matchs here{% endcomment %}
+    {% endblock %}
+    {% block main_header %}
+      {% fragment as extra_actions %}
+      {% block extra_actions %}
+        {% if view.list_export %}
+          {% include view.export_buttons_template_name %}
+        {% endif %}
+      {% endblock %}
+      {% endfragment %}
+      {% if not breadcrumbs_items %}
+        {% include 'wagtailadmin/shared/header.html' with title=page_title subtitle=page_subtitle action_url=header_action_url action_text=header_action_label action_icon=header_action_icon extra_actions=extra_actions icon=header_icon search_url=search_url search_form=search_form search_results_url=index_results_url only %}
+      {% endif %}
+    {% endblock %}
+  {% endblock %}
 
-        <ul class="listing horiz images" style="margin-top: 20px;">
-          {% for svg in object_list %}
-            <li>
-              <div class="svg-preview-card" style="width: 200px; height: 250px; border: 1px solid #e6e6e6; border-radius: 8px; padding: 10px; margin: 10px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <div style="height: 150px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 4px; margin-bottom: 10px;">
-                  <object data="{{ svg.url }}" type="image/svg+xml" style="max-width: 100%; max-height: 100%;" title="{{ svg.title }}">
-                    <img src="{{ svg.url }}" alt="{{ svg.title }}" style="max-width: 100%; max-height: 100%;" />
-                  </object>
-                </div>
-                <div style="text-align: center;">
-                  <h4 style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{{ svg.title }}</h4>
-                  <p style="margin: 0; font-size: 12px; color: #666;">{{ svg.filename }}</p>
-                  <div style="margin-top: 8px;">
-                    <a href="{% url 'wagtailsvg:edit' svg.id %}" class="button button-small" style="margin-right: 5px;">Edit</a>
-                    <a href="{{ svg.url }}" target="_blank" class="button button-small button-secondary">View</a>
-                  </div>
-                </div>
+  <div class="nice-padding">
+    {% block main_content %}
+      <div id="listing-results">
+        {% comment %}This div will be replaced on AJAX refreshes. Do not add page furniture here unless you intend it to disappear on AJAX refresh{% endcomment %}
+
+        {% block before_results %}
+          {% if view.active_filters %}
+            {% include 'wagtailadmin/shared/active_filters.html' with active_filters=view.active_filters %}
+          {% endif %}
+
+          {% if render_filters_fragment %}
+            <template data-controller="w-teleport" data-w-teleport-target-value="#filters-drilldown" data-w-teleport-reset-value="true">
+              {% include 'wagtailadmin/shared/headers/_filters.html' with filters=filters %}
+            </template>
+          {% endif %}
+
+          {% if render_buttons_fragment %}
+            <template data-controller="w-teleport" data-w-teleport-target-value="#w-slim-header-buttons" data-w-teleport-reset-value="true">
+              {% for button in header_buttons %}
+                {% component button %}
+              {% endfor %}
+            </template>
+          {% endif %}
+
+          {% block other_searches %}
+
+          {% endblock %}
+
+          {% if not object_list %}
+            {# pass, to allow the same logic as `if object_list and (is_searching or is_filtering)` #}
+          {% elif is_searching or is_filtering %}
+            <div class="nice-padding">
+              <h2 role="alert">{% blocktrans trimmed with counter=items_count|intcomma count counter_val=items_count %}There is {{ counter }} match{% plural %}There are {{ counter }} matches{% endblocktrans %}</h2>
+            </div>
+          {% endif %}
+        {% endblock %}
+
+        {% if object_list %}
+          {% block results %}
+            <table class="listing">
+              <thead>
+                <tr class="table-headers">
+                  <th>
+                    {% trans 'Preview' %}
+                  </th>
+                  <th>
+                    {% trans 'Name' %}
+                  </th>
+                  <th>
+                    {% trans 'Filename' %}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for svg in object_list %}
+                  <tr>
+                    <td style="width: 60px; padding: 8px;">
+                      <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #aaa; border-radius: 4px; border: 1px solid #e6e6e6;">
+                        <img src="{{ svg.url }}" alt="{{ svg.title }}" style="max-width: 40px; max-height: 40px;" />
+                      </div>
+                    </td>
+                    <td class="title">
+                      <h2><a href="{% url 'wagtailsvg:edit' svg.id %}">{{ svg.title }}</a></h2>
+                    </td>
+                    <td class="title">
+                      <h2><a href="{% url 'wagtailsvg:edit' svg.id %}">{{ svg.filename }}</a></h2>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endblock %}
+          {% block pagination %}
+            {% if is_paginated %}
+              <div class="nice-padding">
+                {% include 'wagtailadmin/shared/pagination_nav.html' with items=page_obj linkurl=index_url %}
               </div>
-            </li>
-          {% endfor %}
-        </ul>
+            {% endif %}
+          {% endblock %}
+        {% else %}
+          <div class="nice-padding w-mt-8">
+            {% block no_results_message %}
+              <p>{{ no_results_message|capfirst }}</p>
+            {% endblock %}
+          </div>
+        {% endif %}
       </div>
-    </div>
-  {% endif %}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ block.super }}
+  {{ media.js }}
+{% endblock %}
+
+{% block extra_css %}
+  {{ block.super }}
+  {{ media.css }}
 {% endblock %}
