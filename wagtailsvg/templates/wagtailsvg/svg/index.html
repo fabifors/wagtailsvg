@@ -33,7 +33,21 @@
         <ul class="listing horiz images" style="margin-top: 20px;">
           {% for svg in object_list %}
             <li>
-              <a style="display: grid; width: 200px; height: 220px;" class="image-choice" title="{{ svg.title }}" href="{% url 'wagtailsvg:edit' svg.id %}"><img style="margin:auto; width: 200px; height: 220px;" src="{{ svg.url }}" alt="{{ svg.title }}" /></a>
+              <div class="svg-preview-card" style="width: 200px; height: 250px; border: 1px solid #e6e6e6; border-radius: 8px; padding: 10px; margin: 10px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="height: 150px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 4px; margin-bottom: 10px;">
+                  <object data="{{ svg.url }}" type="image/svg+xml" style="max-width: 100%; max-height: 100%;" title="{{ svg.title }}">
+                    <img src="{{ svg.url }}" alt="{{ svg.title }}" style="max-width: 100%; max-height: 100%;" />
+                  </object>
+                </div>
+                <div style="text-align: center;">
+                  <h4 style="margin: 0 0 5px 0; font-size: 14px; color: #333;">{{ svg.title }}</h4>
+                  <p style="margin: 0; font-size: 12px; color: #666;">{{ svg.filename }}</p>
+                  <div style="margin-top: 8px;">
+                    <a href="{% url 'wagtailsvg:edit' svg.id %}" class="button button-small" style="margin-right: 5px;">Edit</a>
+                    <a href="{{ svg.url }}" target="_blank" class="button button-small button-secondary">View</a>
+                  </div>
+                </div>
+              </div>
             </li>
           {% endfor %}
         </ul>

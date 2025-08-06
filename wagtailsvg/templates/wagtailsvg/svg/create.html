@@ -1,1 +1,58 @@
 {% extends 'wagtailadmin/generic/create.html' %}
+{% load i18n wagtailadmin_tags %}
+
+{% block content %}
+  {{ block.super }}
+  
+  <div class="nice-padding" style="margin-top: 20px;">
+    <div class="help-block help-info">
+      <div class="help-block__text">
+        <h3>Preview</h3>
+        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
+          <div id="svg-preview-container">
+            <p style="color: #666; text-align: center;">Select an SVG file to see preview</p>
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <button type="button" class="button button-small button-secondary" onclick="refreshPreview()" style="display: none;" id="refresh-btn">Refresh Preview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function refreshPreview() {
+      const container = document.getElementById('svg-preview-container')
+      const fileInput = document.querySelector('input[type="file"]')
+      const refreshBtn = document.getElementById('refresh-btn')
+      
+      if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0]
+        const reader = new FileReader()
+        
+        reader.onload = function(e) {
+          container.innerHTML = `
+            <object data="${e.target.result}" type="image/svg+xml" style="max-width: 100%; max-height: 300px;" id="svg-preview">
+              <img src="${e.target.result}" alt="SVG Preview" style="max-width: 100%; max-height: 300px;" />
+            </object>
+          `
+          refreshBtn.style.display = 'inline-block'
+        }
+        
+        reader.readAsDataURL(file)
+      } else {
+        container.innerHTML = '<p style="color: #666; text-align: center;">Select an SVG file to see preview</p>'
+        refreshBtn.style.display = 'none'
+      }
+    }
+
+    // Auto-refresh preview when file input changes
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.querySelector('input[type="file"]')
+      if (fileInput) {
+        fileInput.addEventListener('change', refreshPreview)
+      }
+      refreshPreview()
+    })
+  </script>
+{% endblock %}

@@ -47,3 +47,30 @@ class Svg(CollectionMember, index.Indexed, models.Model):
     @property
     def url(self):
         return self.file.url
+
+    def get_svg_content(self):
+        """Get the SVG content as a string for preview purposes."""
+        try:
+            if self.file:
+                with self.file.open("r") as f:
+                    return f.read().decode("utf-8")
+        except (UnicodeDecodeError, IOError):
+            return None
+        return None
+
+    def get_svg_dimensions(self):
+        """Get SVG width and height from the content."""
+        content = self.get_svg_content()
+        if content:
+            import re
+
+            width_match = re.search(r'width=["\']([^"\']+)["\']', content)
+            height_match = re.search(r'height=["\']([^"\']+)["\']', content)
+            viewbox_match = re.search(r'viewBox=["\']([^"\']+)["\']', content)
+
+            width = width_match.group(1) if width_match else None
+            height = height_match.group(1) if height_match else None
+            viewbox = viewbox_match.group(1) if viewbox_match else None
+
+            return {"width": width, "height": height, "viewbox": viewbox}
+        return None
