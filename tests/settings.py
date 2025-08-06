@@ -14,7 +14,7 @@ SECRET_KEY = "django-insecure-test-key-for-wagtailsvg"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -41,6 +41,21 @@ INSTALLED_APPS = [
     "tests",
 ]
 
+# Development tools - uncomment for enhanced debugging
+try:
+    import django_extensions
+
+    INSTALLED_APPS.append("django_extensions")
+except ImportError:
+    pass
+
+try:
+    import debug_toolbar
+
+    INSTALLED_APPS.append("debug_toolbar")
+except ImportError:
+    pass
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -51,6 +66,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
+
+# Development middleware - uncomment for enhanced debugging
+try:
+    import debug_toolbar
+
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+except ImportError:
+    pass
 
 ROOT_URLCONF = "tests.urls"
 
@@ -128,3 +151,33 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 
 # Wagtail SVG settings
 WAGTAILSVG_UPLOAD_FOLDER = "svg"
+
+# Taggit settings
+TAGGIT_CASE_INSENSITIVE = True
+
+# Development settings
+if DEBUG:
+    # Enable debug toolbar
+    try:
+        import debug_toolbar
+
+        INTERNAL_IPS = [
+            "127.0.0.1",
+            "localhost",
+        ]
+
+        # Debug toolbar configuration
+        DEBUG_TOOLBAR_CONFIG = {
+            "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+            "DISABLE_PANELS": {
+                "debug_toolbar.panels.history.HistoryPanel",
+                "debug_toolbar.panels.redirects.RedirectsPanel",
+            },
+            "SHOW_COLLAPSED": True,
+            "SHOW_TEMPLATE_CONTEXT": True,
+        }
+    except ImportError:
+        pass
+
+    # Auto-reload settings for development
+    USE_RELOADER = True

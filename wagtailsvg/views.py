@@ -7,9 +7,9 @@ from wagtail.admin.viewsets.model import ModelViewSet
 class SvgChooserViewSet(ModelViewSet):
     model = Svg
     icon = "image"
-    index_template_name = "modeladmin/wagtailsvg/svg/index.html"
-    edit_template_name = "modeladmin/wagtailsvg/svg/edit.html"
-    create_template_name = "modeladmin/wagtailsvg/svg/create.html"
+    index_template_name = "wagtailsvg/svg/index.html"
+    edit_template_name = "wagtailsvg/svg/edit.html"
+    create_template_name = "wagtailsvg/svg/create.html"
     index_url_name = "wagtailsvg:index"
     edit_url_name = "wagtailsvg:edit"
     create_url_name = "wagtailsvg:create"
