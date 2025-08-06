@@ -19,7 +19,7 @@ setup(
     license="GPL-3.0",
     install_requires=[
         "wagtail>=6.0,<7.0",
-        "django>=4.2,<5.0",
+        "django>=4.2,<6.0",
     ],
     platforms=["linux"],
     packages=find_packages(),
@@ -34,6 +34,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "Topic :: Software Development",
     ],

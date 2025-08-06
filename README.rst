@@ -92,7 +92,7 @@ Requirements
 ###########
 
 - Wagtail >= 6.0
-- Django >= 4.2
+- Django >= 4.2, < 6.0 (supports Django 5.x)
 - django-taggit
 
 Testing

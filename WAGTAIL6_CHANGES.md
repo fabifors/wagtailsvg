@@ -34,12 +34,19 @@ This document outlines the changes made to make wagtailsvg compatible with Wagta
 
 - Updated `requirements.txt` and `setup.py` to specify:
   - `wagtail>=6.0,<7.0`
-  - `django>=4.2,<5.0`
+  - `django>=4.2,<6.0` (supports Django 5.x)
 
 ### 3. Model Updates
 
 - Updated `Svg` model to use Wagtail 6 imports
 - Maintained compatibility with `CollectionMember` and `index.Indexed`
+
+### 4. Django 5+ Compatibility
+
+- Verified all Django imports are compatible with Django 5.x
+- Updated version constraints to support Django 5.x
+- Added Python 3.13 classifier support
+- No deprecated Django features used
 
 ## Test Organization
 
@@ -110,5 +117,5 @@ This modified version complies with GPL-3.0 requirements by:
 - **Original Author**: Alexis Le Baron
 - **Original Repository**: https://github.com/Aleksi44/wagtailsvg
 - **Original License**: GPL-3.0
-- **Modification Date**: 2024
-- **Modification Purpose**: Wagtail 6 compatibility
+- **Modification Date**: 2025
+- **Modification Purpose**: Wagtail 6 compatibility and Django 5+ support
