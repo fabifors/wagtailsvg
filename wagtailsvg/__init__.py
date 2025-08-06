@@ -18,4 +18,4 @@ Modified version for Wagtail 6 compatibility - 2025
 Original work by Alexis Le Baron
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
