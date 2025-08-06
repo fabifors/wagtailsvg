@@ -1,6 +1,6 @@
 from wagtailsvg.models import Svg
 from django.utils.translation import gettext_lazy as _
-from wagtail.admin.views.generic import CreateView, EditView
+from wagtail.admin.views.generic import CreateView, EditView, DeleteView
 from wagtail.admin.viewsets.model import ModelViewSet
 
 
@@ -16,5 +16,5 @@ class SvgChooserViewSet(ModelViewSet):
     delete_url_name = "svg_chooser:delete"
     edit_view_class = EditView
     create_view_class = CreateView
-    delete_view_class = None
+    delete_view_class = DeleteView
     permission_policy = None
