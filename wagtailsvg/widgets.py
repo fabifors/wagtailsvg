@@ -11,8 +11,8 @@ class AdminSvgChooser(BaseChooser):
     choose_another_text = _("Choose another SVG")
     link_to_chosen_text = _("Edit this SVG")
     model = Svg
-    choose_modal_url_name = "svg_chooser:choose"
-    edit_item_url_name = "svg_chooser:edit"
+    choose_modal_url_name = "wagtailsvg:index"
+    edit_item_url_name = "wagtailsvg:edit"
     clear_choice_text = _("Clear choice")
     template = "wagtailsvg/widgets/chooser.html"
 
