@@ -4,6 +4,7 @@ from wagtail.blocks import ChooserBlock
 
 
 class SvgChooserBlock(ChooserBlock):
+
     @cached_property
     def target_model(self):
         from wagtailsvg.models import Svg
@@ -17,10 +18,19 @@ class SvgChooserBlock(ChooserBlock):
         return AdminSvgChooser()
 
     def get_form_state(self, value):
-        return self.widget.get_value_data(value)
+        """
+        Return the value in a form-compatible format.
+        This ensures the block properly handles the form state.
+        """
+        # Only show debug output when we have an actual SVG value
+        if value is not None and hasattr(value, "pk"):
+            print("\n" + "=" * 60)
+            print("🔍 [SVG] get_form_state: value:", value)
+            print("=" * 60 + "\n")
 
-    def render_basic(self, value, context=None):
-        if value:
-            return format_html("<img src='{0}' alt='{1}'>", value.url, value.title)
+        if value is None:
+            return None
+        elif hasattr(value, "pk"):
+            return value.pk
         else:
-            return ""
+            return value

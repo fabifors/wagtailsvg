@@ -49,12 +49,12 @@ try:
 except ImportError:
     pass
 
-try:
-    import debug_toolbar
-
-    INSTALLED_APPS.append("debug_toolbar")
-except ImportError:
-    pass
+# try:
+#     import debug_toolbar
+#
+#     INSTALLED_APPS.append("debug_toolbar")
+# except ImportError:
+#     pass
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -68,12 +68,12 @@ MIDDLEWARE = [
 ]
 
 # Development middleware - uncomment for enhanced debugging
-try:
-    import debug_toolbar
-
-    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
-except ImportError:
-    pass
+# try:
+#     import debug_toolbar
+#
+#     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+# except ImportError:
+#     pass
 
 ROOT_URLCONF = "tests.urls"
 

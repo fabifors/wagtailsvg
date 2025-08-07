@@ -9,9 +9,8 @@ except ImportError:
     from wagtail.core.models import Page
     from wagtail.admin.edit_handlers import StreamFieldPanel
 
-from wagtailsvg.edit_handlers import SvgChooserPanel
-from wagtailsvg.models import Svg
-from .blocks import TextBlock, SvgBlock
+from wagtailsvg.blocks import SvgChooserBlock
+from .blocks import TextBlock
 
 
 # =================================
@@ -20,16 +19,15 @@ from .blocks import TextBlock, SvgBlock
 
 
 class TestPage(Page):
-    logo = models.ForeignKey(
-        Svg, related_name='+',
-        null=True, blank=True, on_delete=models.SET_NULL
+    body = StreamField(
+        [
+            ("text", TextBlock()),
+            ("svg", SvgChooserBlock()),
+        ],
+        blank=True,
+        use_json_field=True,
     )
-    body = StreamField([
-        ('text', TextBlock()),
-        ('svg', SvgBlock()),
-    ], blank=True, use_json_field=True)
 
     content_panels = Page.content_panels + [
-        SvgChooserPanel('logo'),
-        StreamFieldPanel('body'),
+        StreamFieldPanel("body"),
     ]

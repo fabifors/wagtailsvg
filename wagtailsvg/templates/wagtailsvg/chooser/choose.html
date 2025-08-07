@@ -1,11 +1,11 @@
-{% extends 'wagtailadmin/base.html' %}
+{% extends 'wagtailadmin/generic/chooser/choose.html' %}
 {% load wagtailadmin_tags %}
 
 {% block content %}
   <div class="nice-padding">
     <h1>{% trans 'Choose an SVG' %}</h1>
 
-    <form action="{% url 'svg_chooser:choose_results' %}" method="GET" class="search-form">
+    <form action="{% url 'wagtailsvg_chooser:choose_results' %}" method="GET" class="search-form">
       <div class="search-form__input-wrapper">
         <input type="text" name="q" placeholder="{% trans 'Search SVGs...' %}" value="{{ search_query|default:'' }}" class="search-form__input" />
         <button type="submit" class="search-form__button">{% trans 'Search' %}</button>
@@ -13,9 +13,9 @@
     </form>
 
     <div class="results">
-      {% if svg_list %}
+      {% if object_list %}
         <div class="listing">
-          {% for svg in svg_list %}
+          {% for svg in object_list %}
             <div class="listing__item">
               <div class="listing__item-content">
                 <div class="listing__item-title">
@@ -48,14 +48,13 @@
         item.addEventListener('click', function (e) {
           e.preventDefault()
           var data = {
-            id: this.dataset.id,
+            value: this.dataset.id,
             string: this.dataset.title,
-            url: this.dataset.url,
-            edit_link: '{% url "svg_chooser:edit" 0 %}'.replace('0', this.dataset.id)
+            edit_link: '{% url "wagtailsvg:edit" 0 %}'.replace('0', this.dataset.id)
           }
           window.parent.postMessage(
             {
-              type: 'svg_chooser:choose',
+              type: 'chooser:choose',
               result: data
             },
             '*'

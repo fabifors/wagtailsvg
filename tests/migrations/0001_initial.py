@@ -3,6 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import tests.blocks
+
 try:
     from wagtail.fields import StreamField
 except ImportError:
@@ -14,21 +15,47 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('wagtailsvg', '0001_initial'),
-        ('wagtailcore', '0059_apply_collection_ordering'),
+        ("wagtailsvg", "0001_initial"),
+        ("wagtailcore", "0059_apply_collection_ordering"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TestPage',
+            name="TestPage",
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.page')),
-                ('body', StreamField([('text', tests.blocks.TextBlock()), ('svg', tests.blocks.SvgBlock())], blank=True, use_json_field=True)),
-                ('logo', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailsvg.svg')),
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.page",
+                    ),
+                ),
+                (
+                    "body",
+                    StreamField(
+                        [("text", tests.blocks.TextBlock())],
+                        blank=True,
+                        use_json_field=True,
+                    ),
+                ),
+                (
+                    "logo",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to="wagtailsvg.svg",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('wagtailcore.page',),
+            bases=("wagtailcore.page",),
         ),
     ]

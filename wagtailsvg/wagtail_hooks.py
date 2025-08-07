@@ -19,10 +19,17 @@ def add_svg_summary_item(request, items):
 
 
 @hooks.register("register_admin_viewset")
+def register_svg_admin_viewset():
+    from wagtailsvg.views import SvgModelViewSet
+
+    return SvgModelViewSet("wagtailsvg", url_prefix="svg")
+
+
+@hooks.register("register_admin_viewset")
 def register_svg_chooser_viewset():
     from wagtailsvg.views import SvgChooserViewSet
 
-    return SvgChooserViewSet("wagtailsvg", url_prefix="svg")
+    return SvgChooserViewSet("wagtailsvg_chooser", url_prefix="svg-chooser")
 
 
 # Register SVG as a snippet

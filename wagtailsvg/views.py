@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 from wagtail.admin.views.generic import CreateView, EditView, DeleteView
 from wagtail.admin.viewsets.model import ModelViewSet
+from wagtail.admin.viewsets.chooser import ChooserViewSet
 
 
 class SvgEditView(EditView):
@@ -16,7 +17,9 @@ class SvgEditView(EditView):
         return context
 
 
-class SvgChooserViewSet(ModelViewSet):
+class SvgModelViewSet(ModelViewSet):
+    """Admin interface for managing SVGs"""
+
     model = Svg
     icon = "image"
     index_template_name = "wagtailsvg/svg/index.html"
@@ -30,3 +33,21 @@ class SvgChooserViewSet(ModelViewSet):
     create_view_class = CreateView
     delete_view_class = DeleteView
     permission_policy = None
+
+
+class SvgChooserViewSet(ChooserViewSet):
+    """Chooser interface for selecting SVGs in forms/blocks"""
+
+    model = Svg
+    icon = "doc-empty-inverse"
+    choose_one_text = _("Choose an SVG")
+    choose_another_text = _("Change SVG")
+    edit_item_text = _("Edit this SVG")
+    page_title = _("Choose an SVG")
+
+    # Use standard Wagtail chooser templates instead of custom ones
+    # The standard templates handle the JavaScript communication properly
+
+    def get_object_list(self):
+        """Return the list of SVG objects for the chooser."""
+        return self.model.objects.all().order_by("title")
